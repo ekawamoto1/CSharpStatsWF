@@ -24,6 +24,10 @@ user-defined methods in C#: [Methods (C# Programming Guide)](https://docs.micros
 
 returning array from UDF in C#: [C# function to return array](https://stackoverflow.com/questions/5416980/c-sharp-function-to-return-array)
 
+reading from file in C#: [How to read from a text file (C# Programming Guide)](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/how-to-read-from-a-text-file)
+
+checking for existence of file in C#: [Check if a File exists in C#](https://www.tutorialspoint.com/check-if-a-file-exists-in-chash)
+
 ## Running Journal
 
 Sat 07/11: implemented basic functionality: keyboard entry of data, printout of stats to console

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace CSharpStats
@@ -31,7 +32,7 @@ namespace CSharpStats
             int mode = Int32.Parse(inStr);
             if (mode == 1)
             {
-                Console.WriteLine("When no more data is left to enter, simply hit return.");
+                Console.WriteLine("\nWhen no more data is left to enter, simply hit return.");
                 while (true)
                 {
                     Console.Write("Data point {0}: ", n+1);
@@ -46,37 +47,59 @@ namespace CSharpStats
                     n++;
                 }
 
-                if (n > 0)
-                {
-                    minmax = ComputeExtremes(dArrL);
-                    mean = ComputeMean(dArrL);
-                    Console.WriteLine("\nFor {0:F0} data points: ", n);
-                    Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
-                    Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
-                    Console.WriteLine("   the mean (average) is {0:0.00}", mean);
-                    if (n > 1)
-                    {
-                        stdev = ComputeStdev(dArrL, mean);
-                        Console.WriteLine("   the std dev is {0:0.00}", stdev);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\nNo data was entered.");
-                }
             }
             
             else if (mode == 2)
             {
-                Console.Write("Enter pathname of data file: ");
+                Console.Write("\nEnter pathname of data file: ");
                 string fName = Console.ReadLine();
-
-
+                if (File.Exists(fName))
+                {
+                    string[] lines = System.IO.File.ReadAllLines(fName);
+                    foreach(string line in lines)
+                    {
+                        sLen = line.Length;
+                        if (sLen > 0)
+                        {
+                            term = Double.Parse(line);
+                            dArrL.Add(term);
+                            n++;
+                            //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
+                        }
+                    }
+                    PrintDataPoints(dArrL);
+                }
+                else
+                {
+                    Console.WriteLine("File {0} does not exist.", fName);
+                    return;
+                }
             }
             else
             {
                 Console.WriteLine("\nInvalid mode; exiting program.");
             }
+
+            if (n > 0)
+            {
+                minmax = ComputeExtremes(dArrL);
+                mean = ComputeMean(dArrL);
+                Console.WriteLine("\nFor {0:F0} data points: ", n);
+                Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
+                Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
+                Console.WriteLine("   the mean (average) is {0:0.00}", mean);
+                if (n > 1)
+                {
+                    stdev = ComputeStdev(dArrL, mean);
+                    Console.WriteLine("   the std dev is {0:0.00}", stdev);
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nNo data points to be analyzed.");
+            }
+
+
 
         }
 
@@ -91,19 +114,19 @@ namespace CSharpStats
                 {
                     for (int i = 0; i < n; i++)
                     {
-                        Console.WriteLine("Data point {0}: {1:0.00}\n", i + 1, inArr[i]);
+                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
                     }
                 }
                 else    // just print first and last five data points
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        Console.WriteLine("Data point {0}: {1:0.00}\n", i + 1, inArr[i]);
+                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
                     }
                     Console.WriteLine("     ... ");
                     for (int i = n - 5; i < n; i++)
                     {
-                        Console.WriteLine("Data point {0}: {1:0.00}\n", i + 1, inArr[i]);
+                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
                     }                    
                 }
             }
@@ -189,6 +212,7 @@ namespace CSharpStats
 /*
 EHKs-MBP:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
+
 When no more data is left to enter, simply hit return.
 Data point 1: 6
 Data point 2: 1
@@ -203,9 +227,9 @@ For 6 data points:
    the minimum is 1.00
    the mean (average) is 3.50
    the std dev is 1.87
-
 EHKs-MBP:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
+
 When no more data is left to enter, simply hit return.
 Data point 1: 3.5
 Data point 2: 
@@ -214,13 +238,55 @@ For 1 data points:
    the maximum is 3.50
    the minimum is 3.50
    the mean (average) is 3.50
-
 EHKs-MBP:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
+
 When no more data is left to enter, simply hit return.
 Data point 1: 
 
-No data was entered.
+No data points to be analyzed.
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 2
+
+Enter pathname of data file: testdata1.txt
+Data point 1: 60.00
+Data point 2: 62.00
+Data point 3: 57.00
+Data point 4: 58.00
+Data point 5: 68.00
+     ... 
+Data point 6: 65.00
+Data point 7: 63.00
+Data point 8: 59.00
+Data point 9: 60.00
+Data point 10: 58.00
+
+For 10 data points: 
+   the maximum is 68.00
+   the minimum is 57.00
+   the mean (average) is 61.00
+   the std dev is 3.50
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 2
+
+Enter pathname of data file: testdata2.txt
+Data point 1: 23.50
+
+For 1 data points: 
+   the maximum is 23.50
+   the minimum is 23.50
+   the mean (average) is 23.50
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 2
+
+Enter pathname of data file: testdata3.txt
+
+No data points to be analyzed.
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 2
+
+Enter pathname of data file: testdata4.txt
+File testdata4.txt does not exist.
 
 */
 
