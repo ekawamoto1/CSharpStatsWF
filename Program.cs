@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CSharpStats
 {
@@ -17,13 +18,8 @@ namespace CSharpStats
                 }
                 Console.WriteLine("command-line args: " + s);
             }
-            // Console.WriteLine("Hello, world!");
-            string outStr = "Enter a string: ";
-            Console.Write(outStr);
-            string inStr = Console.ReadLine();  // change .vscode/launch.json to allow input in integrated terminal
-            outStr = "You entered: " + inStr;
-            Console.WriteLine(outStr); 
 */
+            List<double> dArrL = new List<double>();
 
             Console.Write("Enter 1 for keyboard input, 2 for file input: ");
             string inStr = Console.ReadLine();
@@ -38,9 +34,8 @@ namespace CSharpStats
                 double max = -1.0E10;
                 double min = 1.0E10;
                 double stdev = 0.0;
-                //int sLen = 1;
                 string s; 
-                while(true)
+                while (true)
                 {
                     Console.Write("Data point {0}: ", n+1);
                     s = Console.ReadLine();
@@ -51,7 +46,6 @@ namespace CSharpStats
                     {
                         break;
                     }
-                    n++;
                     term = Double.Parse(s);
                     if (term > max)
                     {
@@ -61,15 +55,29 @@ namespace CSharpStats
                     {
                         min = term;
                     }
+                    dArrL.Add(term);
+                    n++;
                     sum += term;
                 }
                 if (n > 0)
                 {
                     mean = sum / n;
                     Console.WriteLine("\nFor {0:F0} data points: ", n);
-                    Console.WriteLine("   the mean (average) is {0:0.00}", mean);
                     Console.WriteLine("   the maximum is {0:0.00}", max);
                     Console.WriteLine("   the minimum is {0:0.00}", min);
+                    Console.WriteLine("   the mean (average) is {0:0.00}", mean);
+                    if (n > 1)
+                    {
+                        sum = 0.0;
+                        for (int i = 0; i < n; i++)
+                        {
+                            //term = dArr[i] - mean;
+                            term = dArrL[i] - mean;
+                            sum += term * term;
+                            stdev = Math.Sqrt(sum / (double) (n - 1));
+                        }
+                        Console.WriteLine("   the std dev is {0:0.00}", stdev);
+                    }
                 }
                 else
                 {
@@ -88,3 +96,49 @@ namespace CSharpStats
         }
     }
 }
+
+/*
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 1
+When no more data is left to enter, simply hit return.
+Data point 1: 6
+Data point 2: 1
+Data point 3: 5
+Data point 4: 2
+Data point 5: 3
+Data point 6: 4
+Data point 7: 
+
+For 6 data points: 
+   the maximum is 6.00
+   the minimum is 1.00
+   the mean (average) is 3.50
+   the std dev is 1.87
+
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 1
+When no more data is left to enter, simply hit return.
+Data point 1: 3.5
+Data point 2: 
+
+For 1 data points: 
+   the maximum is 3.50
+   the minimum is 3.50
+   the mean (average) is 3.50
+
+EHKs-MBP:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 1
+When no more data is left to enter, simply hit return.
+Data point 1: 
+
+No data was entered.
+
+*/
+
+
+
+
+
+
+
+

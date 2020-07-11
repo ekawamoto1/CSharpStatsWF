@@ -18,6 +18,7 @@ reminder of how to connect project with GitHub repo: [Adding an existing project
 
 numeric formats in C#: [Standard numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)
 
+use of collection (list) in C#: [C# List Examples](https://www.dotnetperls.com/list)
 
 ## Running Journal
 
