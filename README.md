@@ -16,7 +16,12 @@ setting up debug config to use terminal input: [Tutorial: Debug a .NET Core cons
 
 reminder of how to connect project with GitHub repo: [Adding an existing project to GitHub using the command line](https://docs.github.com/en/github/importing-your-projects-to-github/adding-an-existing-project-to-github-using-the-command-line)
 
+numeric formats in C#: [Standard numeric format strings](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)
+
+
 ## Running Journal
+
+Sat 07/11: implemented basic functionality: keyboard entry of data, printout of stats to console
 
 Sat 07/11: created new C# project, CSharpStats, and repos on local git and remote GitHub
 
