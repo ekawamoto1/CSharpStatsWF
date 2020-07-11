@@ -20,6 +20,10 @@ numeric formats in C#: [Standard numeric format strings](https://docs.microsoft.
 
 use of collection (list) in C#: [C# List Examples](https://www.dotnetperls.com/list)
 
+user-defined methods in C#: [Methods (C# Programming Guide)](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/methods)
+
+returning array from UDF in C#: [C# function to return array](https://stackoverflow.com/questions/5416980/c-sharp-function-to-return-array)
+
 ## Running Journal
 
 Sat 07/11: implemented basic functionality: keyboard entry of data, printout of stats to console
