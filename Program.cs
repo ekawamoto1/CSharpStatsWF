@@ -200,23 +200,51 @@ namespace CSharpStats
         }
 
 
+        private static double ComputeMedian(List<double> inArr)
+        {
+            double median = 0.0;
+            int n = inArr.Count;
+
+            if (n > 1)    // median only defined for n > 1
+            {            
+                inArr.Sort();    // first, sort the data points
+                int m0 = n / 2;
+                if (n % 2 == 0)    // if even number of pts, take average of the two middles
+                {
+                    median = (inArr[m0 - 1] + inArr[m0]) / 2.0;
+                }
+                else    // if odd number of pts, take the middle one
+                {
+                    median = inArr[m0];
+                }
+                /*
+                for (int i = 0; i < n; i++)
+                {
+                    Console.WriteLine("Sorted data point {0}: {1:0.00}", i + 1, inArr[i]);
+                }
+                */
+            }
+            
+            return median;    // returns 0 if n < 2
+        }
+
         private static void PrintOutStats(List<double> inArrL)
         {
             int n = inArrL.Count;
-            double[] minmax = new double[2];
-            double mean, stdev;
 
             if (n > 0)
             {
-                minmax = ComputeExtremes(inArrL);
-                mean = ComputeMean(inArrL);
+                double[] minmax = ComputeExtremes(inArrL);
+                double mean = ComputeMean(inArrL);
                 Console.WriteLine("\nFor {0:F0} data points: ", n);
                 Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
                 Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
                 Console.WriteLine("   the mean (average) is {0:0.00}", mean);
                 if (n > 1)
                 {
-                    stdev = ComputeStdev(inArrL, mean);
+                    double med = ComputeMedian(inArrL);
+                    Console.WriteLine("   the median is {0:0.00}", med);
+                    double stdev = ComputeStdev(inArrL, mean);
                     Console.WriteLine("   the std dev is {0:0.00}", stdev);
                 }
             }
@@ -224,14 +252,38 @@ namespace CSharpStats
             {
                 Console.WriteLine("\nNo data points to be analyzed.");
             }
+
+            return;
         }
+
+
 
     }
 }
 
 
 /*
-EHKs-MBP:CSharpStats ehk$ dotnet run
+
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
+Enter 1 for keyboard input, 2 for file input: 1
+
+When no more data is left to enter, simply hit return.
+Data point 1: 7
+Data point 2: 1
+Data point 3: 6
+Data point 4: 2
+Data point 5: 5
+Data point 6: 3
+Data point 7: 4
+Data point 8: 
+
+For 7 data points: 
+   the maximum is 7.00
+   the minimum is 1.00
+   the mean (average) is 4.00
+   the median is 4.00
+   the std dev is 2.16
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
 
 When no more data is left to enter, simply hit return.
@@ -239,16 +291,17 @@ Data point 1: 6
 Data point 2: 1
 Data point 3: 5
 Data point 4: 2
-Data point 5: 3
-Data point 6: 4
+Data point 5: 4
+Data point 6: 3
 Data point 7: 
 
 For 6 data points: 
    the maximum is 6.00
    the minimum is 1.00
    the mean (average) is 3.50
+   the median is 3.50
    the std dev is 1.87
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
 
 When no more data is left to enter, simply hit return.
@@ -259,14 +312,14 @@ For 1 data points:
    the maximum is 3.50
    the minimum is 3.50
    the mean (average) is 3.50
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 1
 
 When no more data is left to enter, simply hit return.
 Data point 1: 
 
 No data points to be analyzed.
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 2
 
 Enter pathname of data file: testdata1.txt
@@ -286,8 +339,9 @@ For 10 data points:
    the maximum is 68.00
    the minimum is 57.00
    the mean (average) is 61.00
+   the median is 60.00
    the std dev is 3.50
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 2
 
 Enter pathname of data file: testdata2.txt
@@ -297,24 +351,22 @@ For 1 data points:
    the maximum is 23.50
    the minimum is 23.50
    the mean (average) is 23.50
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 2
 
 Enter pathname of data file: testdata3.txt
 
 No data points to be analyzed.
-EHKs-MBP:CSharpStats ehk$ dotnet run
+EHKs-MacBook-Pro:CSharpStats ehk$ dotnet run
 Enter 1 for keyboard input, 2 for file input: 2
 
 Enter pathname of data file: testdata4.txt
 File testdata4.txt does not exist.
 
+No data points to be analyzed.
+EHKs-MacBook-Pro:CSharpStats ehk$ 
+
 */
-
-
-
-
-
 
 
 
