@@ -21,88 +21,83 @@ namespace CSharpStats
             }
 */
             List<double> dArrL = new List<double>();
-            int n = 0;
-            double[] minmax = new double[2];
-            double term, mean, stdev;
-            string s;
-            int sLen;
 
             Console.Write("Enter 1 for keyboard input, 2 for file input: ");
             string inStr = Console.ReadLine();
             int mode = Int32.Parse(inStr);
-            if (mode == 1)
+            switch (mode)
             {
-                Console.WriteLine("\nWhen no more data is left to enter, simply hit return.");
-                while (true)
-                {
-                    Console.Write("Data point {0}: ", n+1);
-                    s = Console.ReadLine();
-                    sLen = s.Length;
-                    if (sLen == 0)
-                    {
-                        break;
-                    }
-                    term = Double.Parse(s);
-                    dArrL.Add(term);
-                    n++;
-                }
-
-            }
-            
-            else if (mode == 2)
-            {
-                Console.Write("\nEnter pathname of data file: ");
-                string fName = Console.ReadLine();
-                if (File.Exists(fName))
-                {
-                    string[] lines = System.IO.File.ReadAllLines(fName);
-                    foreach(string line in lines)
-                    {
-                        sLen = line.Length;
-                        if (sLen > 0)
-                        {
-                            term = Double.Parse(line);
-                            dArrL.Add(term);
-                            n++;
-                            //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
-                        }
-                    }
+                case 1:
+                    dArrL = GetDataPointsFromConsole();
+                    break;
+                case 2:
+                    dArrL = GetDataPointsFromFile();
                     PrintDataPoints(dArrL);
-                }
-                else
-                {
-                    Console.WriteLine("File {0} does not exist.", fName);
-                    return;
-                }
-            }
-            else
-            {
-                Console.WriteLine("\nInvalid mode; exiting program.");
+                    break;
+                default:
+                    Console.WriteLine("\nInvalid mode; exiting program.");
+                    System.Environment.Exit(0);
+                    break;
             }
 
-            if (n > 0)
-            {
-                minmax = ComputeExtremes(dArrL);
-                mean = ComputeMean(dArrL);
-                Console.WriteLine("\nFor {0:F0} data points: ", n);
-                Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
-                Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
-                Console.WriteLine("   the mean (average) is {0:0.00}", mean);
-                if (n > 1)
-                {
-                    stdev = ComputeStdev(dArrL, mean);
-                    Console.WriteLine("   the std dev is {0:0.00}", stdev);
-                }
-            }
-            else
-            {
-                Console.WriteLine("\nNo data points to be analyzed.");
-            }
-
-
-
+            PrintOutStats(dArrL);
         }
 
+
+        private static List<double> GetDataPointsFromConsole()
+        {
+            List<double> outArrL = new List<double>();
+            int n = 0;
+            int sLen;
+
+            Console.WriteLine("\nWhen no more data is left to enter, simply hit return.");
+            while (true)
+            {
+                Console.Write("Data point {0}: ", n+1);
+                string s = Console.ReadLine();
+                sLen = s.Length;
+                if (sLen == 0)
+                {
+                    break;
+                }
+                double term = Double.Parse(s);
+                outArrL.Add(term);
+                n++;
+            }
+
+            return outArrL;
+        }
+
+
+        private static List<double> GetDataPointsFromFile()
+        {
+            List<double> outArrL = new List<double>();
+            int n = 0;
+
+            Console.Write("\nEnter pathname of data file: ");
+            string fName = Console.ReadLine();
+            if (File.Exists(fName))
+            {
+                string[] lines = System.IO.File.ReadAllLines(fName);
+                foreach(string line in lines)
+                {
+                    int sLen = line.Length;
+                    if (sLen > 0)
+                    {
+                        double term = Double.Parse(line);
+                        outArrL.Add(term);
+                        n++;
+                        //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("File {0} does not exist.", fName);
+            }
+
+            return outArrL;
+        }
 
         private static void PrintDataPoints(List<Double> inArr)
         {
@@ -205,9 +200,35 @@ namespace CSharpStats
         }
 
 
+        private static void PrintOutStats(List<double> inArrL)
+        {
+            int n = inArrL.Count;
+            double[] minmax = new double[2];
+            double mean, stdev;
+
+            if (n > 0)
+            {
+                minmax = ComputeExtremes(inArrL);
+                mean = ComputeMean(inArrL);
+                Console.WriteLine("\nFor {0:F0} data points: ", n);
+                Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
+                Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
+                Console.WriteLine("   the mean (average) is {0:0.00}", mean);
+                if (n > 1)
+                {
+                    stdev = ComputeStdev(inArrL, mean);
+                    Console.WriteLine("   the std dev is {0:0.00}", stdev);
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nNo data points to be analyzed.");
+            }
+        }
 
     }
 }
+
 
 /*
 EHKs-MBP:CSharpStats ehk$ dotnet run
