@@ -28,7 +28,13 @@ reading from file in C#: [How to read from a text file (C# Programming Guide)](h
 
 checking for existence of file in C#: [Check if a File exists in C#](https://www.tutorialspoint.com/check-if-a-file-exists-in-chash)
 
+how to fork your own repo: [How to fork your own repository on GitHub](https://deanmalone.net/post/how-to-fork-your-own-repo-on-github/)
+
+
+
 ## Running Journal
+
+Wed 07/15: forked CSharpStats to CSharpStatsWF; continue development on Windows PC
 
 Sun 07/12: realized that using Windows Forms in Mac OS was not worth trouble; contemplate forking repo and continuing work on WinForm version there
 
