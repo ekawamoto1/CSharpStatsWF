@@ -30,6 +30,8 @@ checking for existence of file in C#: [Check if a File exists in C#](https://www
 
 ## Running Journal
 
+Sun 07/12: realized that using Windows Forms in Mac OS was not worth trouble; contemplate forking repo and continuing work on WinForm version there
+
 Sat 07/11: implemented basic functionality: keyboard entry of data, printout of stats to console
 
 Sat 07/11: created new C# project, CSharpStats, and repos on local git and remote GitHub
