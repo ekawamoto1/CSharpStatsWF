@@ -167,23 +167,11 @@ namespace CSharpStats
 
     class Program
     {
-        [STAThread]
+        [STAThread]  // this is needed in order to make OpenFileDialog appear: Single-Threaded Apartment COM threading model
         static void Main(string[] args)
         {
             if (args.Length > 0)
             {
-                /*
-                string s = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    s += args[i];
-                    s += ", ";
-                }
-                s = "command-line args: " + s;
-                Console.WriteLine(s);
-                // this works when 'using System.Windows.Forms' is added at the top
-                MessageBox.Show(s, "Info");
-                */
                 int mode = Int32.Parse(args[0]);
                 CSharpStatsGUIApp(mode);
             }
@@ -247,8 +235,7 @@ namespace CSharpStats
                 case 1:    // get numerical data from a Windows Form
                     if (InputBox("Data Entry", "Enter numerical data separated by commas", ref s) == DialogResult.OK)
                     {
-                        //MessageBox.Show(s, "Info");
-                        Console.WriteLine(s);
+                        //Console.WriteLine(s);
                         string[] nums = s.Split(',');
                         foreach (string num in nums)
                         {
@@ -257,7 +244,6 @@ namespace CSharpStats
                             {
                                 double term = Double.Parse(num);
                                 ds.AddPoint(term);
-                                //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
                             }
                         }
                     }
@@ -277,7 +263,6 @@ namespace CSharpStats
                             {
                                 double term = Double.Parse(line);
                                 ds.AddPoint(term);
-                                //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
                             }
                         }
                     }

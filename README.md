@@ -36,6 +36,8 @@ WPF = Windows Presentation Foundation
 
 getting OpenFileDialog to appear by adding [STAThread]: [C#, WPF - OpenFileDialog does not appear](https://stackoverflow.com/questions/2201227/c-wpf-openfiledialog-does-not-appear#:~:text=Tackle%20this%20problem%20by%20running,if%20the%20problem%20is%20solved.)
 
+what is STAThread?: [What does [STAThread] do?](https://stackoverflow.com/questions/1361033/what-does-stathread-do)
+
 getting MessageBox to appear on top of all other windows: [Show Message box on top of all opened windows](https://social.msdn.microsoft.com/Forums/vstudio/en-US/f1fb9b84-a44a-4edd-93ab-c63ff3297bcc/show-message-box-on-top-of-all-opened-windows?forum=csharpgeneral)
 
 input box dialog in C#: [InputBox (C#)](https://www.csharp-examples.net/inputbox/)
