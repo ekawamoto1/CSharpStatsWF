@@ -30,9 +30,20 @@ checking for existence of file in C#: [Check if a File exists in C#](https://www
 
 how to fork your own repo: [How to fork your own repository on GitHub](https://deanmalone.net/post/how-to-fork-your-own-repo-on-github/)
 
+turning a console app into one that uses Windows Forms by changing csproj file: [System.Windows.Forms assembly reference in VS Code](https://stackoverflow.com/questions/47412796/system-windows-forms-assembly-reference-in-vs-code)
 
+WPF = Windows Presentation Foundation
+
+getting OpenFileDialog to appear by adding [STAThread]: [C#, WPF - OpenFileDialog does not appear](https://stackoverflow.com/questions/2201227/c-wpf-openfiledialog-does-not-appear#:~:text=Tackle%20this%20problem%20by%20running,if%20the%20problem%20is%20solved.)
+
+getting MessageBox to appear on top of all other windows: [Show Message box on top of all opened windows](https://social.msdn.microsoft.com/Forums/vstudio/en-US/f1fb9b84-a44a-4edd-93ab-c63ff3297bcc/show-message-box-on-top-of-all-opened-windows?forum=csharpgeneral)
+
+input box dialog in C#: [InputBox (C#)](https://www.csharp-examples.net/inputbox/)
 
 ## Running Journal
+Thu 07/23: got Windows Forms elements to work
+
+Thu 07/23: ported over Dataset object from console version of CSharpStats app
 
 Wed 07/15: forked CSharpStats to CSharpStatsWF; continue development on Windows PC
 

@@ -1,148 +1,88 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Reflection.Emit;
+using System.Security.Permissions;
 
 namespace CSharpStats
 {
-    class Program
+    class Dataset
     {
-        static void Main(string[] args)
+        private List<double> dArrL = new List<double>();
+        private int numPts = 0;
+        private double mean = 0.0;
+
+        public Dataset()
         {
-/* 
-            if(args.Length > 0)
-            {
-                string s = "";
-                for (int i = 0; i < args.Length; i++)
-                {
-                    s += args[i];
-                    s += ", ";
-                }
-                Console.WriteLine("command-line args: " + s);
-            }
-*/
-            List<double> dArrL = new List<double>();
-
-            Console.Write("Enter 1 for keyboard input, 2 for file input: ");
-            string inStr = Console.ReadLine();
-            int mode = Int32.Parse(inStr);
-            switch (mode)
-            {
-                case 1:
-                    dArrL = GetDataPointsFromConsole();
-                    break;
-                case 2:
-                    dArrL = GetDataPointsFromFile();
-                    PrintDataPoints(dArrL);
-                    break;
-                default:
-                    Console.WriteLine("\nInvalid mode; exiting program.");
-                    System.Environment.Exit(0);
-                    break;
-            }
-
-            PrintOutStats(dArrL);
+            dArrL.Clear();
+            numPts = dArrL.Count;
         }
 
-
-        private static List<double> GetDataPointsFromConsole()
+        public Dataset(List<Double> inArrL)
         {
-            List<double> outArrL = new List<double>();
-            int n = 0;
-            int sLen;
-
-            Console.WriteLine("\nWhen no more data is left to enter, simply hit return.");
-            while (true)
-            {
-                Console.Write("Data point {0}: ", n+1);
-                string s = Console.ReadLine();
-                sLen = s.Length;
-                if (sLen == 0)
-                {
-                    break;
-                }
-                double term = Double.Parse(s);
-                outArrL.Add(term);
-                n++;
-            }
-
-            return outArrL;
+            dArrL = inArrL;
+            numPts = dArrL.Count;
         }
 
-
-        private static List<double> GetDataPointsFromFile()
+        public int GetNumPts()
         {
-            List<double> outArrL = new List<double>();
-            int n = 0;
-
-            Console.Write("\nEnter pathname of data file: ");
-            string fName = Console.ReadLine();
-            if (File.Exists(fName))
-            {
-                string[] lines = System.IO.File.ReadAllLines(fName);
-                foreach(string line in lines)
-                {
-                    int sLen = line.Length;
-                    if (sLen > 0)
-                    {
-                        double term = Double.Parse(line);
-                        outArrL.Add(term);
-                        n++;
-                        //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("File {0} does not exist.", fName);
-            }
-
-            return outArrL;
+            return dArrL.Count;
         }
 
-        private static void PrintDataPoints(List<Double> inArr)
+        public void ClearArray()
         {
-            int n = inArr.Count;
-            
-            if (n > 0)
-            {
-                if (n < 10)    // print all data points
-                {
-                    for (int i = 0; i < n; i++)
-                    {
-                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
-                    }
-                }
-                else    // just print first and last five data points
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
-                    }
-                    Console.WriteLine("     ... ");
-                    for (int i = n - 5; i < n; i++)
-                    {
-                        Console.WriteLine("Data point {0}: {1:0.00}", i + 1, inArr[i]);
-                    }                    
-                }
-            }
-            
-            return;
+            dArrL.Clear();
+            numPts = dArrL.Count;
         }
 
-
-        private static double[] ComputeExtremes(List<Double> inArr)
+        public List<double> GetArray()
         {
-            double[] extremes = {0.0, 0.0};
-            int n = inArr.Count;
-            
-            if (n > 0)
+            return dArrL;
+        }
+
+        public int AddPoint(double x)
+        {
+            dArrL.Add(x);
+            numPts = dArrL.Count;
+
+            return numPts;
+        }
+
+        public int AddPoint(int x)
+        {
+            dArrL.Add(Convert.ToDouble(x));
+            numPts = dArrL.Count;
+
+            return numPts;
+        }
+
+        public double GetPoint(int i)
+        {
+            double x = 0.0;
+            numPts = dArrL.Count;
+            if (i >= 0 && i < numPts)
             {
-                double max = -1.0E10;
-                double min = 1.0E10;
+                x = dArrL[i];
+            }
+
+            return x;
+        }
+
+        public double[] ComputeExtremes()
+        {
+            double[] extremes = { 0.0, 0.0 };
+            numPts = dArrL.Count;
+
+            if (numPts > 0)
+            {
+                double max = -1.0 * Double.PositiveInfinity;
+                double min = Double.PositiveInfinity;
                 double term;
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < numPts; i++)
                 {
-                    term = inArr[i];
+                    term = dArrL[i];
                     if (term > max)
                     {
                         max = term;
@@ -155,109 +95,364 @@ namespace CSharpStats
                 extremes[0] = min;
                 extremes[1] = max;
             }
-            
+
             return extremes;
         }
 
-
-        private static double ComputeMean(List<double> inArr)
+        public double ComputeMean()
         {
-            double mean = 0.0;
-            int n = inArr.Count;
-            
-            if (n > 0)
+            mean = 0.0;
+            numPts = dArrL.Count;
+
+            if (numPts > 0)    // only defined if numPts > 0
             {
                 double sum = 0.0;
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < numPts; i++)
                 {
-                    sum += inArr[i];
+                    sum += dArrL[i];
                 }
-                mean = sum / (double) n;
+                mean = sum / (double)numPts;
             }
-            
-            return mean;    // returns 0 if n < 1
+
+            return mean;    // returns 0 if numPts < 1
         }
 
-
-        private static double ComputeStdev(List<double> inArr, double mean)
+        public double ComputeStdev()
         {
             double stdev = 0.0;
-            int n = inArr.Count;
-            
-            if (n > 1)
+            numPts = dArrL.Count;
+
+            if (numPts > 1)    // only defined if numPts > 1
             {
                 double sum = 0.0;
                 double term = 0.0;
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < numPts; i++)
                 {
-                    term = inArr[i] - mean;
+                    term = dArrL[i] - mean;
                     sum += term * term;
                 }
-                stdev = Math.Sqrt(sum / (double) (n - 1));
+                stdev = Math.Sqrt(sum / (double)(numPts - 1));
             }
 
-            return stdev;    // returns 0 if n < 2
+            return stdev;    // returns 0 if numPts < 2
         }
 
-
-        private static double ComputeMedian(List<double> inArr)
+        public double ComputeMedian()
         {
             double median = 0.0;
-            int n = inArr.Count;
+            numPts = dArrL.Count;
 
-            if (n > 1)    // median only defined for n > 1
-            {            
-                inArr.Sort();    // first, sort the data points
-                int m0 = n / 2;
-                if (n % 2 == 0)    // if even number of pts, take average of the two middles
+            if (numPts > 1)    // median only defined for numPts > 1
+            {
+                dArrL.Sort();    // first, sort the data points
+                int m0 = numPts / 2;
+                if (numPts % 2 == 0)    // if even number of pts, take average of the two middles
                 {
-                    median = (inArr[m0 - 1] + inArr[m0]) / 2.0;
+                    median = (dArrL[m0 - 1] + dArrL[m0]) / 2.0;
                 }
                 else    // if odd number of pts, take the middle one
                 {
-                    median = inArr[m0];
+                    median = dArrL[m0];
                 }
-                /*
-                for (int i = 0; i < n; i++)
-                {
-                    Console.WriteLine("Sorted data point {0}: {1:0.00}", i + 1, inArr[i]);
-                }
-                */
+                // for (int i = 0; i < numPts; i++)
+                // {
+                //     Console.WriteLine("Sorted data point {0}: {1:0.00}", i + 1, dArrL[i]);
+                // }
             }
-            
-            return median;    // returns 0 if n < 2
+
+            return median;    // returns 0 if numPts < 2
+        }
+    }    // end of class Dataset
+
+
+    class Program
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                /*
+                string s = "";
+                for (int i = 0; i < args.Length; i++)
+                {
+                    s += args[i];
+                    s += ", ";
+                }
+                s = "command-line args: " + s;
+                Console.WriteLine(s);
+                // this works when 'using System.Windows.Forms' is added at the top
+                MessageBox.Show(s, "Info");
+                */
+                int mode = Int32.Parse(args[0]);
+                CSharpStatsGUIApp(mode);
+            }
+            else
+            {
+                CSharpStatsConsoleApp();
+            }
         }
 
-        private static void PrintOutStats(List<double> inArrL)
-        {
-            int n = inArrL.Count;
 
-            if (n > 0)
+        // from https://www.csharp-examples.net/inputbox/
+        public static DialogResult InputBox(string title, string promptText, ref string value)
+        {
+            Form form = new Form();
+            System.Windows.Forms.Label label = new System.Windows.Forms.Label();
+            TextBox textBox = new TextBox();
+            Button buttonOk = new Button();
+            Button buttonCancel = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+            textBox.Text = value;
+
+            buttonOk.Text = "OK";
+            buttonCancel.Text = "Cancel";
+            buttonOk.DialogResult = DialogResult.OK;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+
+            label.SetBounds(9, 20, 372, 13);
+            textBox.SetBounds(12, 36, 372, 20);
+            buttonOk.SetBounds(228, 72, 75, 23);
+            buttonCancel.SetBounds(309, 72, 75, 23);
+
+            label.AutoSize = true;
+            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(396, 107);
+            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.CancelButton = buttonCancel;
+
+            DialogResult dialogResult = form.ShowDialog();
+            value = textBox.Text;
+            return dialogResult;
+        }
+
+
+        private static void CSharpStatsGUIApp(int mode)
+        {
+            Dataset ds = new Dataset();
+            string s = "";
+            switch(mode)
             {
-                double[] minmax = ComputeExtremes(inArrL);
-                double mean = ComputeMean(inArrL);
-                Console.WriteLine("\nFor {0:F0} data points: ", n);
-                Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
-                Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
-                Console.WriteLine("   the mean (average) is {0:0.00}", mean);
-                if (n > 1)
+                case 1:    // get numerical data from a Windows Form
+                    if (InputBox("Data Entry", "Enter numerical data separated by commas", ref s) == DialogResult.OK)
+                    {
+                        //MessageBox.Show(s, "Info");
+                        Console.WriteLine(s);
+                        string[] nums = s.Split(',');
+                        foreach (string num in nums)
+                        {
+                            int sLen = num.Length;
+                            if (sLen > 0)
+                            {
+                                double term = Double.Parse(num);
+                                ds.AddPoint(term);
+                                //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
+                            }
+                        }
+                    }
+                    break;
+                case 2:    // get filename from a Windows Form
+                    OpenFileDialog openDialog = new OpenFileDialog();
+                    openDialog.Title = "Select A File";
+                    openDialog.Filter = "Text Files (*.txt)|*.txt" + "|" + "All Files (*.*)|*.*";
+                    if (openDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string fName = openDialog.FileName;
+                        string[] lines = System.IO.File.ReadAllLines(fName);
+                        foreach (string line in lines)
+                        {
+                            int sLen = line.Length;
+                            if (sLen > 0)
+                            {
+                                double term = Double.Parse(line);
+                                ds.AddPoint(term);
+                                //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    MessageBox.Show("Invalid mode; exiting program.", "Error");
+                    System.Environment.Exit(0);
+                    break;
+            }
+
+            s = PrintDataPoints(ds);
+            s += PrintOutStats(ds);
+            //Console.WriteLine(s);
+            DialogResult result = MessageBox.Show(s, "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+        }
+
+
+        private static void CSharpStatsConsoleApp()
+        {
+            Dataset ds = new Dataset();
+            String s = "";
+
+            Console.Write("Enter 1 for keyboard input, 2 for file input: ");
+            string inStr = Console.ReadLine();
+            int mode = Int32.Parse(inStr);
+            switch (mode)
+            {
+                case 1:
+                    ds = GetDataPointsFromConsole();
+                    break;
+                case 2:
+                    ds = GetDataPointsFromFile();
+                    s = PrintDataPoints(ds);
+                    Console.WriteLine(s);
+                    break;
+                default:
+                    Console.WriteLine("\nInvalid mode; exiting program.");
+                    System.Environment.Exit(0);
+                    break;
+            }
+
+            s = PrintOutStats(ds);
+            Console.WriteLine(s);
+        }
+
+
+        private static Dataset GetDataPointsFromConsole()
+        {
+            Dataset ds = new Dataset();
+            int n = 0;
+            int sLen;
+
+            Console.WriteLine("\nWhen no more data is left to enter, simply hit return.");
+            while (true)
+            {
+                Console.Write("Data point {0}: ", n + 1);
+                string s = Console.ReadLine();
+                sLen = s.Length;
+                if (sLen == 0)
                 {
-                    double med = ComputeMedian(inArrL);
-                    Console.WriteLine("   the median is {0:0.00}", med);
-                    double stdev = ComputeStdev(inArrL, mean);
-                    Console.WriteLine("   the std dev is {0:0.00}", stdev);
+                    break;
+                }
+                double term = Double.Parse(s);
+                ds.AddPoint(term);
+                n++;
+            }
+
+            return ds;
+        }
+
+
+        private static Dataset GetDataPointsFromFile()
+        {
+            Dataset ds = new Dataset();
+            int n = 0;
+
+            Console.Write("\nEnter pathname of data file: ");
+            string fName = Console.ReadLine();
+            if (File.Exists(fName))
+            {
+                string[] lines = System.IO.File.ReadAllLines(fName);
+                foreach (string line in lines)
+                {
+                    int sLen = line.Length;
+                    if (sLen > 0)
+                    {
+                        double term = Double.Parse(line);
+                        ds.AddPoint(term);
+                        n++;
+                        //Console.WriteLine("line {0}: {1}, length {2}", n, line, sLen);
+                    }
                 }
             }
             else
             {
-                Console.WriteLine("\nNo data points to be analyzed.");
+                Console.WriteLine("File {0} does not exist.", fName);
             }
 
-            return;
+            return ds;
         }
 
 
+        private static String PrintDataPoints(Dataset ds)
+        {
+            int n = ds.GetNumPts();
+            String s = "";
 
+            if (n > 0)
+            {
+                if (n < 10)    // print all data points
+                {
+                    for (int i = 0; i < n; i++)
+                    {
+                        //Console.WriteLine("Data point {0}: {1:0.00}", i + 1, ds.GetPoint(i));
+                        s += String.Format("Data point {0}: {1:0.00}\n", i + 1, ds.GetPoint(i));
+                    }
+                }
+                else    // just print first and last five data points
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        //Console.WriteLine("Data point {0}: {1:0.00}", i + 1, ds.GetPoint(i));
+                        s += String.Format("Data point {0}: {1:0.00}\n", i + 1, ds.GetPoint(i));
+                    }
+                    //Console.WriteLine("     ... ");
+                    s += String.Format("     ... \n");
+                    for (int i = n - 5; i < n; i++)
+                    {
+                        //Console.WriteLine("Data point {0}: {1:0.00}", i + 1, ds.GetPoint(i));
+                        s += String.Format("Data point {0}: {1:0.00}\n", i + 1, ds.GetPoint(i));
+                    }
+                }
+            }
+
+            return s;
+        }
+
+
+        private static String PrintOutStats(Dataset ds)
+        {
+            int n = ds.GetNumPts();
+            String s = "";
+
+            if (n > 0)
+            {
+                double[] minmax = ds.ComputeExtremes();
+                double mean = ds.ComputeMean();
+                /*
+                Console.WriteLine("\nFor {0:F0} data points: ", n);
+                Console.WriteLine("   the maximum is {0:0.00}", minmax[1]);
+                Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
+                Console.WriteLine("   the mean (average) is {0:0.00}", mean);
+                */
+                s = String.Format("\nFor {0:F0} data points: \n", n);
+                s += String.Format("   the maximum is {0:0.00}\n", minmax[1]);
+                s += String.Format("   the minimum is {0:0.00}\n", minmax[0]);
+                s += String.Format("   the mean (average) is {0:0.00}\n", mean);
+                if (n > 1)
+                {
+                    double med = ds.ComputeMedian();
+                    //Console.WriteLine("   the median is {0:0.00}", med);
+                    s += String.Format("   the median is {0:0.00}\n", med);
+                    double stdev = ds.ComputeStdev();
+                    //Console.WriteLine("   the std dev is {0:0.00}", stdev);
+                    s += String.Format("   the std dev is {0:0.00}\n", stdev);
+                }
+            }
+            else
+            {
+                //Console.WriteLine("\nNo data points to be analyzed.");
+                s = String.Format("\nNo data points to be analyzed.\n");
+            }
+
+            return s;
+        }
     }
 }
 
