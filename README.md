@@ -43,6 +43,8 @@ getting MessageBox to appear on top of all other windows: [Show Message box on t
 input box dialog in C#: [InputBox (C#)](https://www.csharp-examples.net/inputbox/)
 
 ## Running Journal
+Tue 07/28: using INputBox as a model, made MyMessageBox that would open on top of other windows, use fixed-width font
+
 Thu 07/23: got Windows Forms elements to work
 
 Thu 07/23: ported over Dataset object from console version of CSharpStats app

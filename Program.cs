@@ -181,6 +181,39 @@ namespace CSharpStats
             }
         }
 
+        public static DialogResult MyMessageBox(string title, string promptText)
+        {
+            Form form = new Form();
+            System.Windows.Forms.Label label = new System.Windows.Forms.Label();
+            Button buttonOk = new Button();
+
+            form.Text = title;
+            label.Text = promptText;
+
+            buttonOk.Text = "OK";
+            buttonOk.DialogResult = DialogResult.OK;
+
+            label.SetBounds(9, 10, 372, 100);
+            buttonOk.SetBounds(208, 322, 75, 23);
+
+            label.AutoSize = true;
+            label.Font = new Font("Courier New", 10);
+            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
+            form.ClientSize = new Size(396, 357);
+            form.Controls.AddRange(new Control[] { label, buttonOk });
+            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.AcceptButton = buttonOk;
+            form.TopMost = true;
+
+            DialogResult dialogResult = form.ShowDialog();
+            return dialogResult;
+        }
+
 
         // from https://www.csharp-examples.net/inputbox/
         public static DialogResult InputBox(string title, string promptText, ref string value)
@@ -276,7 +309,8 @@ namespace CSharpStats
             s = PrintDataPoints(ds);
             s += PrintOutStats(ds);
             //Console.WriteLine(s);
-            DialogResult result = MessageBox.Show(s, "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+            //DialogResult result = MessageBox.Show(s, "Info", MessageBoxButtons.OK, MessageBoxIcon.None);
+            DialogResult result = MyMessageBox("Results", s);
         }
 
 
@@ -416,7 +450,7 @@ namespace CSharpStats
                 Console.WriteLine("   the minimum is {0:0.00}", minmax[0]);
                 Console.WriteLine("   the mean (average) is {0:0.00}", mean);
                 */
-                s = String.Format("\nFor {0:F0} data points: \n", n);
+                s = String.Format("\nFor {0:F0} data point(s): \n", n);
                 s += String.Format("   the maximum is {0:0.00}\n", minmax[1]);
                 s += String.Format("   the minimum is {0:0.00}\n", minmax[0]);
                 s += String.Format("   the mean (average) is {0:0.00}\n", mean);
